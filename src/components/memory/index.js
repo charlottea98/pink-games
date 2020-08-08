@@ -24,24 +24,62 @@ function generateCards() {
   return cards.sort(() => Math.random() - 0.5);
 }
 
+function setCardsFlipped(cards, cardToFlip, isFlipped) {
+  return cards.map(card => {
+    if (card.key === cardToFlip.key) {
+      console.log(cardToFlip.color);
+      return {
+        ...card,
+        isFlipped: isFlipped
+      };
+    }
+    return card;
+  });
+}
+
 function Memory() {
-  const [cards, setCards] = useState(generateCards);
+  const [game, setGame] = useState({ cards: generateCards() });
 
   function onRestart() {
-    setCards(generateCards);
+    setGame({ cards: generateCards() });
   }
 
   function onCardClick(card) {
-    setCards(oldCards => {
-      return oldCards.map(oldCard => {
-        if (oldCard.key === card.key) {
-          return {
-            ...oldCard,
-            isFlipped: true
-          };
-        }
-        return oldCard;
-      });
+    if (card.isFlipped) {
+      return;
+    }
+    setGame(({ cards, firstCard, secondCard }) => {
+      if (!firstCard) {
+        return {
+          cards: setCardsFlipped(cards, card, true),
+          firstCard: card
+        };
+      }
+      if (!secondCard) {
+        return {
+          cards: setCardsFlipped(cards, card, true),
+          firstCard: firstCard,
+          secondCard: card
+        };
+      }
+      if (firstCard.color === secondCard.color) {
+        return {
+          cards: setCardsFlipped(cards, card, true),
+          firstCard: card
+        };
+      }
+      return {
+        cards: setCardsFlipped(
+          setCardsFlipped(
+            setCardsFlipped(cards, firstCard, false),
+            secondCard,
+            false
+          ),
+          card,
+          true
+        ),
+        firstCard: card
+      };
     });
   }
 
@@ -50,7 +88,7 @@ function Memory() {
       <div className="game-container">
         <StatusBar status="Time: 0s" onRestart={onRestart}></StatusBar>
         <div className="memory-grid">
-          {cards.map(card => (
+          {game.cards.map(card => (
             <MemoryCard
               {...card}
               onClick={() => onCardClick(card)}
