@@ -17,8 +17,7 @@ module.exports = {
   mode: "development",
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
-      title: "Awesome games"
+      template: "./src/index.html"
     })
   ],
   devServer: {
