@@ -1,0 +1,33 @@
+.game-container {
+  width: 40vw;
+  margin: 1vw auto;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+}
+
+.status {
+  flex: 1;
+  margin: 0;
+}
+
+.button {
+  flex: 0;
+}
+
+.memory-grid {
+  height: 40vw;
+  margin-top: 1vw;
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  grid-template-columns: repeat(4, auto);
+  grid-gap: 0.5vw;
+}
+
+.memory-card {
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+}
