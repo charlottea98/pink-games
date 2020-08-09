@@ -19,8 +19,18 @@ const colors = [
 function generateCards() {
   const cards = [];
   for (let i = 0; i < colors.length; i++) {
-    cards.push({ key: i * 2, isFlipped: false, color: colors[i] });
-    cards.push({ key: i * 2 + 1, isFlipped: false, color: colors[i] });
+    cards.push({
+      key: i * 2,
+      isFlipped: false,
+      color: colors[i],
+      isLocked: false
+    });
+    cards.push({
+      key: i * 2 + 1,
+      isFlipped: false,
+      color: colors[i],
+      isLocked: false
+    });
   }
   return cards.sort(() => Math.random() - 0.5);
 }
@@ -38,7 +48,26 @@ function setCardsFlipped(cards, cardsToFlip) {
 }
 
 function prettifyTime(time) {
-  return time;
+  const seconds_total = time / 1000;
+  const minutes = Math.floor(seconds_total / 60);
+  const seconds = Math.floor(seconds_total % 60);
+  if (minutes > 0) {
+    return minutes + "min " + seconds + "s";
+  } else {
+    return seconds + "s";
+  }
+}
+
+function setCorrectPair(cards, correctCards) {
+  return cards.map(card => {
+    if (correctCards.includes(card.key)) {
+      return {
+        ...card,
+        isLocked: true
+      };
+    }
+    return card;
+  });
 }
 
 function Memory() {
@@ -49,16 +78,19 @@ function Memory() {
 
   const [startTime, setStartTime] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
+
+  const [win, setWin] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     // städa upp win
-    if (startTime === 0) return;
-    const intervalId = setInterval(() => {
-      setElapsedTime(Date.now() - startTime);
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [startTime]);
+    if (startTime !== 0 && !win) {
+      const intervalId = setInterval(() => {
+        setElapsedTime(Date.now() - startTime);
+      }, 1000);
+      return () => clearInterval(intervalId);
+    }
+  }, [startTime, win]);
 
   useEffect(() => {
     if (wrongPair.length === 0) return;
@@ -89,6 +121,7 @@ function Memory() {
     timeoutIds.current.forEach(id => clearTimeout(id));
     timeoutIds.current = [];
     setGame({ cards: generateCards() });
+    setWin(false);
     setStartTime(0);
     setElapsedTime(0);
   }
@@ -98,10 +131,10 @@ function Memory() {
       return;
     }
 
-    setShowModal(true);
+    //setShowModal(true);
 
     setGame(({ cards, firstCard }) => {
-      const newCards = setCardsFlipped(cards, [card.key]);
+      let newCards = setCardsFlipped(cards, [card.key]);
 
       if (!firstCard) {
         return {
@@ -111,9 +144,17 @@ function Memory() {
       } else {
         if (firstCard.color !== card.color) {
           setWrongPair([firstCard, card]);
+        } else {
+          newCards = setCorrectPair(newCards, [firstCard.key, card.key]);
+
+          if (newCards.every(card => card.isLocked)) {
+            setWin(true);
+            setShowModal(true);
+          }
         }
         return {
           // innehålla ändringen för locked, kolla om alla korten är låsta
+
           cards: newCards
         };
       }
@@ -152,7 +193,7 @@ function Memory() {
     <div>
       <div className="game-container">
         <StatusBar
-          status={"Time: " + prettifyTime(elapsedTime) + "ms"}
+          status={"Time: " + prettifyTime(elapsedTime)}
           onRestart={onRestart}
         ></StatusBar>
         <div className="memory-grid">
@@ -166,7 +207,7 @@ function Memory() {
         <ResultModal
           show={showModal}
           header="Congratulations!"
-          body={"Your time was " + elapsedTime + "ms"}
+          body={"Your time was " + prettifyTime(elapsedTime)}
           handleClose={() => setShowModal(false)}
         ></ResultModal>
       </div>
