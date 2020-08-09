@@ -1,33 +1,32 @@
-.game-container {
-  width: 40vw;
-  margin: 1vw auto;
-}
+@media only screen and (orientation: landscape) {
+  .game-container {
+    width: 40vw;
+    margin: 1vw auto;
+  }
 
-.status-bar {
-  display: flex;
-  align-items: center;
+  .memory-grid {
+    height: 40vw;
+    margin-top: 1vw;
+    display: grid;
+    grid-gap: 0.5vw;
+  }
 }
+@media only screen and (orientation: portrait) {
+  .game-container {
+    width: 98vw;
+    margin: 2vw auto;
+  }
 
-.status {
-  flex: 1;
-  margin: 0;
-}
-
-.button {
-  flex: 0;
+  .memory-grid {
+    height: 98vw;
+    margin-top: 2vw;
+    display: grid;
+    grid-gap: 1vw;
+  }
 }
 
 .memory-grid {
-  height: 40vw;
-  margin-top: 1vw;
   display: grid;
   grid-template-columns: repeat(4, auto);
   grid-template-columns: repeat(4, auto);
-  grid-gap: 0.5vw;
-}
-
-.memory-card {
-  border: 1px solid black;
-  border-radius: 5px;
-  background-color: white;
 }
