@@ -24,13 +24,12 @@ function generateCards() {
   return cards.sort(() => Math.random() - 0.5);
 }
 
-function setCardsFlipped(cards, cardToFlip, isFlipped) {
+function setCardsFlipped(cards, cardToFlip) {
   return cards.map(card => {
     if (card.key === cardToFlip.key) {
-      console.log(cardToFlip.color);
       return {
         ...card,
-        isFlipped: isFlipped
+        isFlipped: !card.isFlipped
       };
     }
     return card;
@@ -51,33 +50,25 @@ function Memory() {
     setGame(({ cards, firstCard, secondCard }) => {
       if (!firstCard) {
         return {
-          cards: setCardsFlipped(cards, card, true),
+          cards: setCardsFlipped(cards, [card.key]),
           firstCard: card
         };
       }
       if (!secondCard) {
         return {
-          cards: setCardsFlipped(cards, card, true),
+          cards: setCardsFlipped(cards, [card,key]),
           firstCard: firstCard,
           secondCard: card
         };
       }
       if (firstCard.color === secondCard.color) {
         return {
-          cards: setCardsFlipped(cards, card, true),
+          cards: setCardsFlipped(cards, [card.key]),
           firstCard: card
         };
       }
       return {
-        cards: setCardsFlipped(
-          setCardsFlipped(
-            setCardsFlipped(cards, firstCard, false),
-            secondCard,
-            false
-          ),
-          card,
-          true
-        ),
+        cards: setCardsFlipped(cards, [card.key, firstCard.key, secondCard.key]),
         firstCard: card
       };
     });
