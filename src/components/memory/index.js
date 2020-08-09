@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import "./index.css";
 import MemoryCard from "./MemoryCard";
 import StatusBar from "./StatusBar";
+import ResultModal from "./ResultModal";
 
 const colors = [
   "pink",
@@ -36,6 +37,10 @@ function setCardsFlipped(cards, cardsToFlip) {
   });
 }
 
+function prettifyTime(time) {
+  return time;
+}
+
 function Memory() {
   const [game, setGame] = useState({ cards: generateCards() });
   const [wrongPair, setWrongPair] = useState([]);
@@ -44,8 +49,10 @@ function Memory() {
 
   const [startTime, setStartTime] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    // städa upp win
     if (startTime === 0) return;
     const intervalId = setInterval(() => {
       setElapsedTime(Date.now() - startTime);
@@ -78,6 +85,7 @@ function Memory() {
   }, []);
 
   function onRestart() {
+    // reset win till false
     timeoutIds.current.forEach(id => clearTimeout(id));
     timeoutIds.current = [];
     setGame({ cards: generateCards() });
@@ -89,6 +97,9 @@ function Memory() {
     if (card.isFlipped) {
       return;
     }
+
+    setShowModal(true);
+
     setGame(({ cards, firstCard }) => {
       const newCards = setCardsFlipped(cards, [card.key]);
 
@@ -102,6 +113,7 @@ function Memory() {
           setWrongPair([firstCard, card]);
         }
         return {
+          // innehålla ändringen för locked, kolla om alla korten är låsta
           cards: newCards
         };
       }
@@ -140,7 +152,7 @@ function Memory() {
     <div>
       <div className="game-container">
         <StatusBar
-          status={"Time: " + elapsedTime + "ms"}
+          status={"Time: " + prettifyTime(elapsedTime) + "ms"}
           onRestart={onRestart}
         ></StatusBar>
         <div className="memory-grid">
@@ -151,6 +163,12 @@ function Memory() {
             ></MemoryCard>
           ))}
         </div>
+        <ResultModal
+          show={showModal}
+          header="Congratulations!"
+          body={"Your time was " + elapsedTime + "ms"}
+          handleClose={() => setShowModal(false)}
+        ></ResultModal>
       </div>
     </div>
   );
