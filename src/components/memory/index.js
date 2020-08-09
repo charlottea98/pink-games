@@ -24,9 +24,9 @@ function generateCards() {
   return cards.sort(() => Math.random() - 0.5);
 }
 
-function setCardsFlipped(cards, cardToFlip) {
+function setCardsFlipped(cards, cardsToFlip) {
   return cards.map(card => {
-    if (card.key === cardToFlip.key) {
+    if (cardsToFlip.includes(card.key)) {
       return {
         ...card,
         isFlipped: !card.isFlipped
@@ -56,7 +56,7 @@ function Memory() {
       }
       if (!secondCard) {
         return {
-          cards: setCardsFlipped(cards, [card,key]),
+          cards: setCardsFlipped(cards, [card, key]),
           firstCard: firstCard,
           secondCard: card
         };
@@ -68,7 +68,11 @@ function Memory() {
         };
       }
       return {
-        cards: setCardsFlipped(cards, [card.key, firstCard.key, secondCard.key]),
+        cards: setCardsFlipped(cards, [
+          card.key,
+          firstCard.key,
+          secondCard.key
+        ]),
         firstCard: card
       };
     });
