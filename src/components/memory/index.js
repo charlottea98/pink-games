@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Button from "react-bootstrap/Button";
 import "./index.css";
 import MemoryCard from "./MemoryCard";
@@ -38,6 +38,10 @@ function setCardsFlipped(cards, cardsToFlip) {
 
 function Memory() {
   const [game, setGame] = useState({ cards: generateCards() });
+  const [wrongPair, setWrongPair] = useState([]);
+  //const [timeoutIds, setTimeoutIds] = useState([]);
+  const timeoutIds = useRef([]);
+
   const [startTime, setStartTime] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
 
@@ -49,7 +53,33 @@ function Memory() {
     return () => clearInterval(intervalId);
   }, [startTime]);
 
+  useEffect(() => {
+    if (wrongPair.length === 0) return;
+    const timeoutId = setTimeout(() => {
+      setGame(oldGame => {
+        const newCards = setCardsFlipped(
+          oldGame.cards,
+          wrongPair.map(card => card.key)
+        );
+        return {
+          cards: newCards,
+          firstCard: oldGame.firstCard
+        };
+      });
+    }, 1000);
+    //setTimeoutIds(oldTimeoutIds => oldTimeoutIds.concat(timeoutId));
+    timeoutIds.current = timeoutIds.current.concat(timeoutId);
+  }, [wrongPair]);
+
+  useEffect(() => {
+    return () => {
+      timeoutIds.current.forEach(id => clearTimeout(id));
+    };
+  }, []);
+
   function onRestart() {
+    timeoutIds.current.forEach(id => clearTimeout(id));
+    timeoutIds.current = [];
     setGame({ cards: generateCards() });
     setStartTime(0);
     setElapsedTime(0);
@@ -59,36 +89,23 @@ function Memory() {
     if (card.isFlipped) {
       return;
     }
-    setGame(({ cards, firstCard, secondCard }) => {
+    setGame(({ cards, firstCard }) => {
+      const newCards = setCardsFlipped(cards, [card.key]);
+
       if (!firstCard) {
         return {
-          cards: setCardsFlipped(cards, [card.key]),
+          cards: newCards,
           firstCard: card
         };
-      }
-      if (!secondCard) {
+      } else {
+        if (firstCard.color !== card.color) {
+          setWrongPair([firstCard, card]);
+        }
         return {
-          cards: setCardsFlipped(cards, [card.key]),
-          firstCard: firstCard,
-          secondCard: card
+          cards: newCards
         };
       }
-      if (firstCard.color === secondCard.color) {
-        return {
-          cards: setCardsFlipped(cards, [card.key]),
-          firstCard: card
-        };
-      }
-      return {
-        cards: setCardsFlipped(cards, [
-          card.key,
-          firstCard.key,
-          secondCard.key
-        ]),
-        firstCard: card
-      };
     });
-    //if (startTime!== 0) setStartTime(Date.now());
     setStartTime(oldStartTime => {
       if (oldStartTime === 0) {
         return Date.now();
@@ -96,6 +113,28 @@ function Memory() {
       return oldStartTime;
     });
   }
+
+  /*
+      if (!secondCard) {
+        return {
+          cards: newCards,
+          firstCard: firstCard,
+          secondCard: card
+        };
+      }
+      if (firstCard.color === secondCard.color) {
+        return {
+          cards: newCards,
+          firstCard: card
+        };
+      }
+      return {
+        cards: newCards,
+        firstCard: card
+      };
+    });
+    */
+  //if (startTime!== 0) setStartTime(Date.now());
 
   return (
     <div>
