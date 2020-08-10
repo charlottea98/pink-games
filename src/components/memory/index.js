@@ -4,16 +4,17 @@ import "./index.css";
 import MemoryCard from "./MemoryCard";
 import StatusBar from "./StatusBar";
 import ResultModal from "./ResultModal";
+import Preloads from "./Preloads";
 
 const colors = [
-  "pink",
-  "red",
-  "orange",
-  "yellow",
-  "green",
-  "teal",
-  "blue",
-  "purple"
+  "swan",
+  "dolphin",
+  "fish",
+  "giraffe",
+  "horse",
+  "lion",
+  "monkey",
+  "zebra"
 ];
 
 function generateCards() {
@@ -153,8 +154,6 @@ function Memory() {
           }
         }
         return {
-          // innehålla ändringen för locked, kolla om alla korten är låsta
-
           cards: newCards
         };
       }
@@ -192,6 +191,7 @@ function Memory() {
   return (
     <div>
       <div className="game-container">
+        <Preloads />
         <StatusBar
           status={"Time: " + prettifyTime(elapsedTime)}
           onRestart={onRestart}

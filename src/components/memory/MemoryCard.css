@@ -1,31 +1,66 @@
+.memory-scene {
+  perspective: 600px;
+}
+.memory-card-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+}
+.flipped {
+  transform: rotateY(180deg);
+}
 .memory-card {
-  width: 9.625vw;
-  height: 9.625vw;
   border: 1px solid black;
   border-radius: 5px;
-  background-color: white;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Safari */
 }
-.pink {
-  background-color: #ff43d0;
+.memory-card-back {
+  background-color: rgb(214 214 214);
+  background-image: radial-gradient(white 15%, transparent 16%),
+    radial-gradient(white 15%, transparent 16%);
+  background-size: 60px 60px;
+  background-position: 0 0, 30px 30px;
 }
-.red {
-  background-color: #ff0900;
+.memory-card-front {
+  background-size: cover;
+  transform: rotateY(180deg);
 }
-.orange {
-  background-color: #ff7f00;
+
+.swan {
+  background-image: url("../../images/swan.jpg");
+  background-size: cover;
 }
-.yellow {
-  background-color: #ffef00;
+.dolphin {
+  background-image: url("../../images/dolphin.jpg");
+  background-size: cover;
 }
-.teal {
-  background-color: #63d3df;
+.fish {
+  background-image: url("../../images/fish.jpg");
+  background-size: cover;
 }
-.green {
-  background-color: #00f11d;
+.giraffe {
+  background-image: url("../../images/giraffe.jpg");
+  background-size: cover;
 }
-.blue {
-  background-color: #0079ff;
+.horse {
+  background-image: url("../../images/horse.jpg");
+  background-size: cover;
 }
-.purple {
-  background-color: #a800ff;
+.lion {
+  background-image: url("../../images/lion.jpg");
+  background-size: cover;
+}
+.monkey {
+  background-image: url("../../images/monkey.jpg");
+  background-size: cover;
+}
+.zebra {
+  background-image: url("../../images/zebra.jpg");
+  background-size: cover;
 }
