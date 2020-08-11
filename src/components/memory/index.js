@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import Button from "react-bootstrap/Button";
 import "./index.css";
 import MemoryCard from "./MemoryCard";
 import StatusBar from "./StatusBar";
 import ResultModal from "./ResultModal";
 import Preloads from "./Preloads";
+import * as utils from "../../utils";
 
 const colors = [
   "swan",
@@ -83,6 +83,8 @@ function Memory() {
   const [win, setWin] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  const [scoreIsSaved, setScoreIsSaved] = useState(false);
+
   useEffect(() => {
     // städa upp win
     if (startTime !== 0 && !win) {
@@ -125,6 +127,7 @@ function Memory() {
     setWin(false);
     setStartTime(0);
     setElapsedTime(0);
+    setScoreIsSaved(false);
   }
 
   function onCardClick(card) {
@@ -151,6 +154,7 @@ function Memory() {
           if (newCards.every(card => card.isLocked)) {
             setWin(true);
             setShowModal(true);
+            setElapsedTime(Date.now() - startTime);
           }
         }
         return {
@@ -164,6 +168,22 @@ function Memory() {
       }
       return oldStartTime;
     });
+  }
+
+  function fetchLeaderboard() {
+    return utils.fetchLeaderboard("memory").then(lb => {
+      return lb.map(
+        (entry, i) => `${i + 1}. ${entry.name}: ${prettifyTime(entry.timeMs)}`
+      );
+    });
+  }
+
+  function saveScore(name) {
+    if (name) {
+      utils
+        .saveScore("memory", { name: name, timeMs: elapsedTime })
+        .then(() => setScoreIsSaved(true));
+    }
   }
 
   /*
@@ -195,6 +215,7 @@ function Memory() {
         <StatusBar
           status={"Time: " + prettifyTime(elapsedTime)}
           onRestart={onRestart}
+          showLeaderboard={() => setShowModal(true)}
         ></StatusBar>
         <div className="memory-grid">
           {game.cards.map(card => (
@@ -206,9 +227,11 @@ function Memory() {
         </div>
         <ResultModal
           show={showModal}
-          header="Congratulations!"
-          body={"Your time was " + prettifyTime(elapsedTime)}
+          header={win ? "Congratulations!" : "Leaderboard:"}
+          body={win && "You won! Your time was " + prettifyTime(elapsedTime)}
           handleClose={() => setShowModal(false)}
+          fetchLeaderboard={fetchLeaderboard}
+          saveScore={win && !scoreIsSaved && saveScore} // spara bara på win och när det inte sparats ännu
         ></ResultModal>
       </div>
     </div>
