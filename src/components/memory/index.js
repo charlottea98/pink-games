@@ -154,7 +154,7 @@ function Memory() {
           if (newCards.every(card => card.isLocked)) {
             setWin(true);
             setShowModal(true);
-            setElapsedTime(Date.now() - startTime);
+            setElapsedTime(Date.now() - startTime); // KOM IHÅG
           }
         }
         return {
@@ -226,6 +226,13 @@ function Memory() {
           ))}
         </div>
         <ResultModal
+          /*
+          show={showModal}
+          header="Congratulations!"
+          body={"You won! Your time was " + prettifyTime(elapsedTime)}
+          handleClose={() => setShowModal(false)}
+          */
+
           show={showModal}
           header={win ? "Congratulations!" : "Leaderboard:"}
           body={win && "You won! Your time was " + prettifyTime(elapsedTime)}

@@ -1,22 +1,21 @@
 @media only screen and (orientation: landscape) {
   .snake-grid {
     height: 24vw;
-    margin-top: 1vw;
   }
 }
 
 @media only screen and (orientation: portrait) {
   .snake-grid {
-    height: 57.6vw;
-    margin-top: 2vw;
+    height: 58.8vw;
   }
 }
 
 .snake-grid {
   display: grid;
-  grid-template-columns: repeat(12, auto);
+  grid-template-rows: repeat(12, auto);
   grid-template-columns: repeat(20, auto);
   border: 1px solid black;
+  margin-top: 1vw;
 }
 
 .snake-cell {

@@ -57,7 +57,8 @@ function tick(game) {
     newHead.x < 0 ||
     newHead.x === width ||
     newHead.y < 0 ||
-    newHead.y === height
+    newHead.y === height ||
+    snake.tail.some(cell => isEqual(cell, newHead))
   ) {
     return {
       ...game,
@@ -65,7 +66,6 @@ function tick(game) {
     };
   }
 
-  //console.log(snake.tail.length);
   const newSnake = {
     ...snake,
     head: newHead,
@@ -89,7 +89,7 @@ function Snake() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setGame(oldGame => tick(oldGame));
-    }, 400);
+    }, 200);
     return () => clearInterval(intervalId);
   }, [gameOver]);
 
