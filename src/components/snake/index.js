@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
+import TouchController from "./TouchController";
+import StatusBar from "../StatusBar";
 
 const width = 20;
 const height = 12;
+const initialIntervalMs = 400;
 
 function generateGame() {
   const snake = {
@@ -13,7 +16,8 @@ function generateGame() {
   return {
     snake,
     food: generateFood(snake),
-    isOver: false
+    isOver: false,
+    commands: []
   };
 }
 
@@ -33,11 +37,37 @@ function isEqual(cell1, cell2) {
   return cell1.x === cell2.x && cell1.y === cell2.y;
 }
 
-function tick(game) {
-  const { snake, food } = game;
-  let newHead = snake.head;
+function isOpposite(dir1, dir2) {
+  return (
+    (dir1 === "right" && dir2 === "left") ||
+    (dir1 === "left" && dir2 === "right") ||
+    (dir1 === "up" && dir2 === "down") ||
+    (dir1 === "down" && dir2 === "up")
+  );
+}
 
-  switch (snake.dir) {
+function tick(game) {
+  if (game.isOver) return game;
+  const { snake, food, commands } = game;
+
+  let newCommands = [...commands];
+  //sålänge det finns commands och det är ett giltigt move
+  while (
+    newCommands.length > 0 &&
+    (isOpposite(newCommands[0], snake.dir) || newCommands[0] === snake.dir)
+  ) {
+    newCommands = newCommands.slice(1); // tar bort nollte element i listan
+  }
+
+  let newDir = snake.dir;
+  if (newCommands.length > 0) {
+    newDir = newCommands[0];
+    newCommands = newCommands.slice(1);
+  }
+
+  let newHead = snake.head; //kan behöva ändras
+
+  switch (newDir) {
     case "up":
       newHead = { x: snake.head.x, y: snake.head.y - 1 };
       break;
@@ -72,26 +102,56 @@ function tick(game) {
     // mergar tail med gamla huvud annars tar bort en del av tail
     tail: [snake.head].concat(
       snake.tail.slice(0, snake.tail.length - (isEqual(newHead, food) ? 0 : 1))
-    )
+    ),
+    dir: newDir
   };
 
   return {
     ...game,
     snake: newSnake,
-    food: isEqual(food, newHead) ? generateFood(newSnake) : food
+    food: isEqual(food, newHead) ? generateFood(newSnake) : food,
+    commands: newCommands
   };
+}
+
+function getIntervalMs(game) {
+  const food = game.snake.tail.length - 1;
+  return initialIntervalMs * Math.pow(0.95, Math.floor(food / 3));
 }
 
 function Snake() {
   const [game, setGame] = useState(generateGame());
   const [gameOver, setGameOver] = useState(false);
+  const [intervalMs, setIntervalMs] = useState(initialIntervalMs);
+
+  const [startTime, setStartTime] = useState(Date.now());
+  const [elapsedTime, setElapsedTime] = useState(0);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setGame(oldGame => tick(oldGame));
-    }, 200);
-    return () => clearInterval(intervalId);
-  }, [gameOver]);
+    if (!gameOver) {
+      const intervalId = setInterval(() => {
+        setGame(oldGame => {
+          const newGame = tick(oldGame);
+          if (newGame.isOver) {
+            setGameOver(true);
+          }
+          setIntervalMs(getIntervalMs(newGame));
+          return newGame;
+        });
+      }, intervalMs);
+      return () => clearInterval(intervalId);
+    }
+  }, [gameOver, intervalMs]);
+
+  useEffect(() => {
+    // städa upp win
+    if (startTime !== 0 && !gameOver) {
+      const intervalId = setInterval(() => {
+        setElapsedTime(Date.now() - startTime);
+      }, 1000);
+      return () => clearInterval(intervalId);
+    }
+  }, [startTime, gameOver]);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyPress);
@@ -118,17 +178,19 @@ function Snake() {
         newDir = "down";
         break;
     }
+    addCommand(newDir);
+  }
 
+  function addCommand(dir) {
     setGame(oldGame => {
       return {
         ...oldGame,
-        snake: {
-          ...oldGame.snake,
-          dir: newDir
-        }
+        commands: [...oldGame.commands, dir]
       };
     });
   }
+
+  function onChangeDir(dir) {}
 
   const cells = [];
   for (let y = 0; y < height; y++) {
@@ -143,14 +205,16 @@ function Snake() {
         : "";
 
       cells.push(
-        <div key={`${x}- ${y}`} className={"snake-cell " + className}></div>
+        <div key={`${x}-${y}`} className={"snake-cell " + className}></div>
       );
     }
   }
 
   return (
     <div className="game-container">
+      <StatusBar status={elapsedTime}></StatusBar>
       <div className="snake-grid">{cells}</div>
+      <TouchController onChangeDir={addCommand} />
     </div>
   );
 }
