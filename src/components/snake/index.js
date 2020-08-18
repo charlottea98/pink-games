@@ -5,6 +5,7 @@ import StatusBar from "../StatusBar";
 import prettifyTime from "../memory/index";
 import ResultModal from "../ResultModal";
 import * as utils from "../../utils";
+import Preloads from "./Preloads";
 
 const width = 20;
 const height = 12;
@@ -251,6 +252,7 @@ function Snake() {
 
   return (
     <div className="game-container">
+      <Preloads />
       <StatusBar
         status={"Time: " + utils.prettifyTime(elapsedTime)}
         score={"Score: " + (game.snake.tail.length - 1)}

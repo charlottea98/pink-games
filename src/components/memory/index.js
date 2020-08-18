@@ -151,6 +151,7 @@ function Memory() {
         };
       }
     });
+
     setStartTime(oldStartTime => {
       if (oldStartTime === 0) {
         return Date.now();
