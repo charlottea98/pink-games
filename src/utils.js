@@ -12,7 +12,7 @@ export function fetchLeaderboard(game, orderBy) {
       orderBy.forEach(rule => {
         query = query.orderBy(...rule);
       });
-      return query.get();
+      return query.limit(10).get();
     })
     .then(querySnapshot => {
       let leaderboard = [];
