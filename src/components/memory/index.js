@@ -48,17 +48,6 @@ function setCardsFlipped(cards, cardsToFlip) {
   });
 }
 
-function prettifyTime(time) {
-  const seconds_total = time / 1000;
-  const minutes = Math.floor(seconds_total / 60);
-  const seconds = Math.floor(seconds_total % 60);
-  if (minutes > 0) {
-    return minutes + "min " + seconds + "s";
-  } else {
-    return seconds + "s";
-  }
-}
-
 function setCorrectPair(cards, correctCards) {
   return cards.map(card => {
     if (correctCards.includes(card.key)) {
@@ -171,9 +160,10 @@ function Memory() {
   }
 
   function fetchLeaderboard() {
-    return utils.fetchLeaderboard("memory").then(lb => {
+    return utils.fetchLeaderboard("memory", [["timeMs", "asc"]]).then(lb => {
       return lb.map(
-        (entry, i) => `${i + 1}. ${entry.name}: ${prettifyTime(entry.timeMs)}`
+        (entry, i) =>
+          `${i + 1}. ${entry.name}: ${utils.prettifyTime(entry.timeMs)}`
       );
     });
   }
@@ -213,7 +203,7 @@ function Memory() {
       <div className="game-container">
         <Preloads />
         <StatusBar
-          status={"Time: " + prettifyTime(elapsedTime)}
+          status={"Time: " + utils.prettifyTime(elapsedTime)}
           onRestart={onRestart}
           showLeaderboard={() => setShowModal(true)}
         ></StatusBar>
@@ -235,7 +225,9 @@ function Memory() {
 
           show={showModal}
           header={win ? "Congratulations!" : "Leaderboard:"}
-          body={win && "You won! Your time was " + prettifyTime(elapsedTime)}
+          body={
+            win && "You won! Your time was " + utils.prettifyTime(elapsedTime)
+          }
           handleClose={() => setShowModal(false)}
           fetchLeaderboard={fetchLeaderboard}
           saveScore={win && !scoreIsSaved && saveScore} // spara bara på win och när det inte sparats ännu
