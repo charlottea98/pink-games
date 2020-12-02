@@ -1,11 +1,11 @@
-.preload-snake {
-  background: url("../../images/snake-body.png") no-repeat -9999px -9999px;
+.preload-mkm-body {
+  background: url("../../images/mkm-body.png") no-repeat -9999px -9999px;
 }
 
-.preload-snake-head {
-  background: url("../../images/snake.png") no-repeat -9999px -9999px;
+.preload-mkm {
+  background: url("../../images/mkm.png") no-repeat -9999px -9999px;
 }
 
-.preload-apple {
-  background: url("../../images/apple.png") no-repeat -9999px -9999px;
+.preload-beer {
+  background: url("../../images/beer.png") no-repeat -9999px -9999px;
 }

@@ -24,21 +24,21 @@
 }
 
 .head {
-  background-image: url("../../images/snake.png");
+  background-image: url("../../images/mkm.png");
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
 }
 .tail {
-  background-image: url("../../images/snake-body.png");
+  background-image: url("../../images/mkm-body.png");
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
 }
 .food {
-  background-image: url("../../images/apple.png");
+  background-image: url("../../images/beer.png");
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;

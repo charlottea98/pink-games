@@ -7,20 +7,20 @@ function MinesweeperCell({
   isMine,
   minesAround,
   onClick,
-  onRightClick
+  onRightClick,
 }) {
   return (
     <div
       className={"ms-cell" + (isOpen ? " ms-cell-open" : "")}
       onClick={onClick}
-      onContextMenu={e => {
+      onContextMenu={(e) => {
         e.preventDefault();
         onRightClick();
       }}
     >
-      {isMarked && <span className="ms-icon">🏴</span>}
-      {isOpen && isMine && <span className="ms-icon">💣</span>}
-      {isOpen && !isMine && minesAround > 0 && (
+      {isMarked && <span className="ms-icon fas fa-flag"></span>}
+      {isMine && isOpen && <span className="ms-icon fas fa-bomb"></span>}
+      {!isMine && isOpen && minesAround > 0 && (
         <span className={"ms-icon ms-" + minesAround}>{minesAround}</span>
       )}
     </div>

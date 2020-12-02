@@ -1,7 +1,7 @@
 @media only screen and (orientation: landscape) {
   .ms-cell {
-    height: 4vw;
     width: 4vw;
+    height: 4vw;
   }
   .ms-icon {
     font-size: 1.8vw;
@@ -9,8 +9,8 @@
 }
 @media only screen and (orientation: portrait) {
   .ms-cell {
-    height: 9.8vw;
-    width: 9.8vw;
+    width: 9.6vw;
+    height: 9.6vw;
   }
   .ms-icon {
     font-size: 4vw;
@@ -25,15 +25,15 @@
   border-left-color: #ffffff;
   text-align: center;
   display: table;
+  font-family: "Press Start 2P";
 }
 .ms-cell-open {
   background-color: #cecece;
   border: 1px solid #dddddd;
 }
 .ms-icon {
-  font-family: "Press Start 2P";
-  vertical-align: middle;
   display: table-cell;
+  vertical-align: middle;
 }
 .ms-1 {
   color: blue;

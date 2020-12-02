@@ -16,7 +16,7 @@ function ResultModal({
 
   useEffect(() => {
     if (show) {
-      fetchLeaderboard().then(lb => setLeaderboard(lb));
+      fetchLeaderboard().then(setLeaderboard);
     }
   }, [show]);
 

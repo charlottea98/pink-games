@@ -5,12 +5,10 @@
 }
 @media only screen and (orientation: portrait) {
   .ms-grid {
-    height: 98vw;
+    height: 96vw;
   }
 }
 .ms-grid {
-  margin-top: 1vw;
-  border: 1px solid #dddddd;
   display: grid;
   grid-template-columns: repeat(10, auto);
   grid-template-rows: repeat(10, auto);
