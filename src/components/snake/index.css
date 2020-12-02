@@ -24,21 +24,21 @@
 }
 
 .head {
-  background-image: url("../../images/mkm.png");
+  background-color: green;
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
 }
 .tail {
-  background-image: url("../../images/mkm-body.png");
+  background-color: lightgreen;
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
 }
 .food {
-  background-image: url("../../images/beer.png");
+  background-color: red;
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;
